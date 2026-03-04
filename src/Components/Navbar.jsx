@@ -116,7 +116,7 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div className="flex flex-col poppins justify-between px-4 py-8 h-[84vh]">
+          <div className="flex flex-col poppins justify-between px-4 py-8 h-[86vh]">
             <div className="flex flex-col  space-y-6">
               <NavLink
                 to="/"
@@ -173,7 +173,7 @@ const Navbar = () => {
                 <CTAButton />
               </div>
             </div>
-            <div>
+            <div className=" border-t">
               <h1 className="text-gray-600">Birgunj-13, Nepal</h1>
               <h1 className="whitespace-nowrap text-gray-600">
                 Fast • Affordable • Professional

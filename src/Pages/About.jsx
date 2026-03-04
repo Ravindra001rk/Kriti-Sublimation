@@ -1,10 +1,13 @@
 import React from "react";
+import HeroSection from "../Components/Home/HeroSection";
 
 const About = () => {
   return (
     <div>
       <div className="h-screen w-full bg-red-400"></div>
-      <div className="h-screen w-full bg-red-700"></div>
+      <div className="h-screen w-full ">
+        
+      </div>
     </div>
   );
 };

@@ -5,10 +5,10 @@
 html {
   scroll-behavior: auto;
 }
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 0px;
   height: 0px;
-} */
+}
 .poppins {
   font-family: "Poppins", sans-serif;
 }
@@ -18,4 +18,59 @@ html {
 
 @theme {
   --color-brandBg: #f6f4f4;
+}
+
+
+.rotating-text {
+  animation: rotateText 10s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes rotateText {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+*{
+  box-sizing: border-box;
+}
+
+
+:root {
+  --brand-red: #FF0000;
+  --brand-orange: #FFA500;
+  --brand-gradient: linear-gradient(to right, var(--brand-red), var(--brand-orange));
+}
+
+.gradient-bg {
+  background: var(--brand-gradient);
+}
+
+.gradient-text {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
 }
