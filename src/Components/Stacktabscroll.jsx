@@ -168,7 +168,7 @@ export default function StackTabScroll() {
       {/* Cards */}
       <div
         className="relative "
-        style={{ paddingBottom: services.length * TAB_H * 4 }}
+        style={{ paddingBottom: services.length * TAB_H * 1 }}
       >
         {services.map((service, i) => (
           <div
@@ -275,7 +275,6 @@ export default function StackTabScroll() {
       </div>
 
       {/* extra scroll space */}
-      <div className="h-screen w-full"></div>
     </div>
   );
 }

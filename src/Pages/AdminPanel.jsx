@@ -161,10 +161,11 @@ function Sidebar({ tab, setTab, onLogout }) {
       icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
     },
     {
-      id: "Products",
+      id: "products",
       label: "Products",
-      icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
+      icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4",
     },
+    ,
   ];
 
   return (
@@ -302,6 +303,11 @@ function MobileBottomNav({ tab, setTab }) {
       id: "settings",
       label: "Settings",
       icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
+    },
+    {
+      id: "products",
+      label: "Products",
+      icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4",
     },
   ];
 
@@ -787,7 +793,7 @@ function Dashboard({ onLogout }) {
           {tab === "upload" && <UploadTab />}
           {tab === "gallery" && <GalleryTab />}
           {tab === "settings" && <SettingsTab />}
-          {tab === "Products" && <ProductsCustomize />}
+          {tab === "products" && <ProductsTab />}
         </main>
       </div>
 
@@ -818,4 +824,270 @@ export default function AdminPanel() {
 
   if (!authed) return <LoginPage onLogin={() => setAuthed(true)} />;
   return <Dashboard onLogout={handleLogout} />;
+}
+
+function ProductsTab() {
+  const [form, setForm] = useState({ name: "", description: "", category: "" });
+  const [files, setFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+  const [products, setProducts] = useState([]);
+  const [view, setView] = useState("upload");
+  const fileRef = useRef();
+
+  const fetchProducts = async () => {
+    const res = await fetch(`${API}/api/products`, { credentials: "include" });
+    const data = await res.json();
+    if (res.ok) setProducts(data.products);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleFile = (fileList) => {
+    const arr = Array.from(fileList);
+    setFiles(arr);
+    setPreviews(arr.map((f) => URL.createObjectURL(f)));
+  };
+
+  const handleUpload = async () => {
+    if (!form.name || !form.description || !form.category)
+      return setError("Fill all fields");
+    if (!files.length) return setError("Select at least one image");
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    const formData = new FormData();
+    Object.entries(form).forEach(([k, v]) => formData.append(k, v));
+    files.forEach((f) => formData.append("images", f)); // ← fixed
+
+    try {
+      const res = await fetch(`${API}/api/products/upload`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) setError(data.error);
+      else {
+        setSuccess("Product uploaded!");
+        setForm({ name: "", description: "", category: "" });
+        setFiles([]);
+        setPreviews([]); // ← fixed
+        fetchProducts();
+      }
+    } catch {
+      setError("Upload failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this product?")) return;
+    await fetch(`${API}/api/products/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    setProducts((p) => p.filter((pr) => pr._id !== id));
+  };
+
+  const categories = [
+    "T-Shirts",
+    "Mugs",
+    "Caps",
+    "ID Cards",
+    "Badges",
+    "Frames",
+    "Metal Sheets",
+    "Other",
+  ];
+
+  return (
+    <div className="w-full">
+      <div className="flex items-center gap-3 mb-6">
+        <button
+          onClick={() => setView("upload")}
+          className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${view === "upload" ? "text-white shadow-md" : "text-gray-500 bg-white border border-gray-200"}`}
+          style={
+            view === "upload"
+              ? { background: "linear-gradient(135deg, #7c3aed, #db2777)" }
+              : {}
+          }
+        >
+          Upload Product
+        </button>
+        <button
+          onClick={() => setView("manage")}
+          className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${view === "manage" ? "text-white shadow-md" : "text-gray-500 bg-white border border-gray-200"}`}
+          style={
+            view === "manage"
+              ? { background: "linear-gradient(135deg, #7c3aed, #db2777)" }
+              : {}
+          }
+        >
+          Manage ({products.length})
+        </button>
+      </div>
+
+      {view === "upload" && (
+        <div className="max-w-xl">
+          <div className="space-y-4">
+            {/* Image drop zone */}
+            <div
+              onClick={() => fileRef.current.click()}
+              className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-violet-300 hover:bg-violet-50 transition-all"
+            >
+              {previews.length > 0 ? ( // ← fixed
+                <div className="flex gap-2 flex-wrap justify-center">
+                  {previews.map((p, i) => (
+                    <img
+                      key={i}
+                      src={p}
+                      className="h-24 w-24 object-cover rounded-lg shadow"
+                    />
+                  ))}
+                  <p className="w-full text-xs text-gray-400 text-center mt-1">
+                    Click to change
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <svg
+                    className="w-10 h-10 text-gray-300 mx-auto mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <p className="text-gray-500 text-sm">
+                    Click to select images{" "}
+                    <span className="text-violet-500">(multiple allowed)</span>
+                  </p>
+                  <p className="text-gray-400 text-xs mt-1">JPG, PNG, JPEG</p>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => handleFile(e.target.files)}
+            />{" "}
+            {/* ← fixed */}
+            {/* Name */}
+            <div>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
+                Product Name
+              </label>
+              <input
+                type="text"
+                value={form.name}
+                placeholder="Custom T-Shirt"
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors placeholder-gray-400 shadow-sm"
+              />
+            </div>
+            {/* Category */}
+            <div>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
+                Category
+              </label>
+              <select
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors shadow-sm"
+              >
+                <option value="">Select category</option>
+                {categories.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* Description */}
+            <div>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
+                Description
+              </label>
+              <textarea
+                value={form.description}
+                placeholder="Product description..."
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
+                rows={3}
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors placeholder-gray-400 shadow-sm resize-none"
+              />
+            </div>
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                <p className="text-red-600 text-xs">{error}</p>
+              </div>
+            )}
+            {success && (
+              <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                <p className="text-green-600 text-xs">{success}</p>
+              </div>
+            )}
+            <button
+              onClick={handleUpload}
+              disabled={loading}
+              className="w-full py-3 rounded-xl font-semibold text-sm text-white shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+              style={{
+                background: "linear-gradient(135deg, #7c3aed, #db2777)",
+              }}
+            >
+              {loading ? "Uploading..." : "Upload Product"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {view === "manage" && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {products.map((product) => (
+            <div
+              key={product._id}
+              className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all"
+            >
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="w-full h-36 object-cover cursor-pointer"
+                onClick={() => window.open(product.images[0], "_blank")}
+              />
+              <div className="p-3">
+                <p className="text-gray-900 text-sm font-semibold truncate">
+                  {product.name}
+                </p>
+                <p className="text-gray-400 text-xs mt-0.5">
+                  {product.category}
+                </p>
+                <button
+                  onClick={() => handleDelete(product._id)}
+                  className="w-full mt-3 py-1.5 rounded-lg text-xs font-medium text-red-500 bg-red-50 hover:bg-red-100 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

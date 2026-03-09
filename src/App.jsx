@@ -10,6 +10,7 @@ import Navbar from "./Components/Navbar";
 import ScrollToTop from "./Components/Home/ScrollToTop";
 import PhotoGallery from "./Pages/PhotoGallery";
 import AdminPanel from "./Pages/AdminPanel";
+import ProductDetail from "./Pages/ProductDetail";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
         </Routes>
       </SmoothScroll>
     </div>
