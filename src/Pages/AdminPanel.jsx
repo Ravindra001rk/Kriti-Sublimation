@@ -46,7 +46,7 @@ function LoginPage({ onLogin }) {
   };
 
   return (
-    <div className="min-h-[calc(100dvh-3rem)] lg:min-h-[calc(100dvh-4rem)] flex items-center justify-center bg-brandBg px-4">
+    <div className="h-screen flex items-center justify-center bg-brandBg px-4">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
           className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-10 translate-x-1/3 -translate-y-1/3"
@@ -170,7 +170,7 @@ function Sidebar({ tab, setTab, onLogout }) {
   ];
 
   return (
-    <aside className="hidden md:flex w-56 h-[calc(100dvh-4rem)] lg:h-[calc(100dvh-4rem)] bg-white border-r border-gray-200 flex-col shadow-sm flex-shrink-0">
+    <aside className="hidden md:flex w-56 h-screen bg-white border-r border-gray-200 flex-col shadow-sm flex-shrink-0">
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
           <div>
@@ -609,7 +609,7 @@ function GalleryTab() {
                 <img
                   src={photo.imageUrl}
                   alt="photo"
-                  className="w-full h-36 sm:h-44 object-cover object-top cursor-pointer"
+                  className="w-full h-46 sm:h-54 object-cover object-top cursor-pointer"
                   onClick={() => window.open(photo.imageUrl, "_blank")}
                 />{" "}
               </div>{" "}
@@ -872,6 +872,7 @@ function ProductsTab() {
     "ID Cards",
     "Badges",
     "Frames",
+    "Holder",
     "Accessories",
   ];
 

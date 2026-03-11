@@ -7,7 +7,6 @@ import {
   HolderDori,
   IDCard,
   KeyRing,
-  PressJacket,
 } from "../assets/frontend_assets/index";
 
 const services = [
@@ -19,7 +18,7 @@ const services = [
       "High-quality ID cards in bulk — fast turnaround, sharp print, and digital lanyard printing included. Perfect for offices, schools, and institutions.",
     stat: "500+",
     statLabel: "Cards Per Day",
-    bg: "#AA94FF",
+    bg: "#C9BEFF",
     text: "#111111",
     accent: "#111111",
     img: IDCard,
@@ -45,7 +44,7 @@ const services = [
       "From business cards to large-format banners — bulk printing for businesses and events. Consistent quality, fast delivery, no compromise.",
     stat: "24hr",
     statLabel: "Turnaround Time",
-    bg: "#F5F0E8",
+    bg: "#FFF8F0",
     text: "#111111",
     accent: "#111111",
     img: HolderDori,
@@ -58,7 +57,7 @@ const services = [
       "Custom button badges, photo frames, and personalized gift items. Turn memories into keepsakes — great for events, anniversaries, and celebrations.",
     stat: "100%",
     statLabel: "Custom Made",
-    bg: "#9EF483",
+    bg: "#89D4FF",
     text: "#111111",
     accent: "#111111",
     img: KeyRing,
@@ -120,13 +119,6 @@ export default function StackTabScroll() {
     <div>
       {/* Header */}
       <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-8 sm:pt-10 md:pt-12 pb-4 sm:pb-6 md:pb-8">
-        <p
-          className="text-xs font-bold tracking-[0.3em] uppercase text-black mb-2"
-          style={{ opacity: 0.4 }}
-        >
-          Kriti Sublimation · Birgunj
-        </p>
-
         <h2 className="text-4xl sm:text-5xl md:text-6xl poppins font-extrabold leading-tight tracking-tight mb-4">
           Our Best{" "}
           <span className="relative inline-block">
@@ -262,7 +254,7 @@ export default function StackTabScroll() {
                 </div>
 
                 {/* Right Side */}
-                <div className="flex-1">
+                <div className="flex-1 rounded-2xl overflow-hidden">
                   <img
                     src={service.img}
                     className="h-full w-full object-cover"

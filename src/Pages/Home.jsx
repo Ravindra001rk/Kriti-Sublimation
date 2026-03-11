@@ -4,6 +4,7 @@ import WhyChoose from "../Components/Home/WhyChoose";
 import FeatureProducts from "../Components/Home/FeatureProducts";
 import StackTabScroll from "../Components/Stacktabscroll";
 import UnderDevelopment from "../Components/Underdevelopment";
+import UGCHero from "../Components/Home/Ugchero";
 
 const Home = () => {
   return (
@@ -12,7 +13,8 @@ const Home = () => {
       <WhyChoose />
       <FeatureProducts />
       <StackTabScroll />
-      <UnderDevelopment />
+      <UGCHero/>
+      {/* <UnderDevelopment /> */}
     </div>
   );
 };
