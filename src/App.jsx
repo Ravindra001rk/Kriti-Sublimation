@@ -11,26 +11,33 @@ import ScrollToTop from "./Components/Home/ScrollToTop";
 import PhotoGallery from "./Pages/PhotoGallery";
 import AdminPanel from "./Pages/AdminPanel";
 import ProductDetail from "./Pages/ProductDetail";
+import ClicktoScrollTop from "./Components/ClicktoScrollTop";
+import { useLocation } from "react-router-dom";
+import ScrollToTopBtn from "./Components/ClicktoScrollTop";
+function App() {
+  const location = useLocation();
+  const hideOn = ["/admin"]; // add more paths if needed
+  const showBtn = !hideOn.some((path) => location.pathname.startsWith(path));
+  const isAdmin = location.pathname.startsWith("/admin");
 
-const App = () => {
   return (
-    <div className="">
-      <Navbar />
-      <SmoothScroll>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/photos/:phone" element={<PhotoGallery />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
-        </Routes>
-      </SmoothScroll>
-    </div>
-  );
-};
+    <>
+      {/* your routes */}
+      <Navbar/>
+      <ScrollToTop/>
+      <Routes>
+        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/photos/:phone" element={<PhotoGallery />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
+      </Routes>
 
+      {showBtn && <ScrollToTopBtn />}
+    </>
+  );
+}
 export default App;

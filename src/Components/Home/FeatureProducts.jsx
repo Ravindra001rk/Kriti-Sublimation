@@ -4,10 +4,10 @@ import HighlightedText from "./HighlightedText";
 import {
   ButtonBadge,
   Dori,
+  DoriWholesale,
   HolderDori,
   IDCard,
   KeyRing,
-  PressJacket,
 } from "../../assets/frontend_assets";
 import { Link } from "react-router-dom";
 
@@ -16,37 +16,37 @@ const featuredProducts = [
     id: "01",
     image: IDCard,
     title: "ID Card",
-    desc: "Customizable, plastic or PVC",
+    desc: "High-quality PVC or plastic ID cards, perfect for offices, schools, or events.",
   },
   {
     id: "02",
     image: Dori,
-    title: "Lanyard Printing, Wholesale & Beyond.",
-    desc: "Available Sizes: 20mm & 16mm",
+    title: "Lanyard Printing",
+    desc: "Durable lanyards available in 16mm & 20mm, ideal for ID cards, events, and promotions.",
   },
   {
     id: "03",
     image: HolderDori,
-    title: "School dori Attached with holder",
-    desc: "Available Sizes: 20mm & 16mm",
+    title: "School Lanyard with Holder",
+    desc: "Convenient school lanyard with card holder, available in 16mm & 20mm sizes.",
   },
   {
     id: "04",
     image: KeyRing,
     title: "Lanyard Keyring",
-    desc: "Available Sizes: 20mm & 16mm",
+    desc: "Keep your keys handy with our 16mm & 20mm lanyard keyrings, practical for everyday use.",
   },
   {
     id: "05",
     image: ButtonBadge,
     title: "Button Pin Badge",
-    desc: "Available Sizes: 44mm & 58mm",
+    desc: "Customizable 44mm & 58mm pin badges, ideal for events, promotions, and gifts.",
   },
   {
     id: "06",
-    image: PressJacket,
-    title: "Press Jacket",
-    desc: "Protective and stylish",
+    image: DoriWholesale,
+    title: "Wholesale Lanyard",
+    desc: "Bulk lanyard supply for schools, offices, or events, combining style and functionality.",
   },
 ];
 
@@ -113,7 +113,7 @@ const FeatureProducts = () => {
                 src={product.image}
                 alt={product.title}
                 className={`w-full h-full object-cover transition-transform duration-500 ease-in-out transform ${
-                  isHovered ? "scale-110" : "scale-103"
+                  isHovered ? "scale-105" : "scale-103"
                 }`}
               />
               <div
