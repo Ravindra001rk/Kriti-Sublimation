@@ -914,10 +914,10 @@ function ProductsTab() {
       if (!res.ok) setError(data.error);
       else {
         setSuccess("Product uploaded!");
-        sessionStorage.removeItem("productsCache"); 
+        sessionStorage.removeItem("productsCache");
         setForm({ name: "", shortDesc: "", longDesc: "", category: "" });
         setFiles([]);
-        setPreviews([]); 
+        setPreviews([]);
         fetchProducts();
       }
     } catch (err) {
@@ -972,7 +972,7 @@ function ProductsTab() {
     editFiles.forEach((f) => formData.append("images", f));
 
     try {
-      const res = await fetch(`${API}/api/products/${editProduct._id}`, {
+      const res = await fetch(`${API}/api/products/id/${editProduct._id}`, {
         method: "PATCH",
         credentials: "include",
         body: formData,
@@ -994,7 +994,7 @@ function ProductsTab() {
   const handleDeleteImage = async (productId, imageUrl) => {
     if (!confirm("Remove this image?")) return;
     try {
-      const res = await fetch(`${API}/api/products/${productId}/image`, {
+      const res = await fetch(`${API}/api/products/id/${productId}/image`, {
         method: "DELETE",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -1203,14 +1203,27 @@ function ManageTab() {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this product?")) return;
-    await fetch(`${API}/api/products/id/${id}`, {
+const handleDelete = async (id) => {
+  if (!confirm("Delete this product?")) return;
+
+  try {
+    const res = await fetch(`${API}/api/products/${id}`, {
       method: "DELETE",
       credentials: "include",
     });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error(err);
+      alert("Delete failed");
+      return;
+    }
+
     setProducts((p) => p.filter((pr) => pr._id !== id));
-  };
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const openEdit = (product) => {
     setEditProduct(product);
@@ -1267,6 +1280,7 @@ function ManageTab() {
 
   const handleDeleteImage = async (productId, imageUrl) => {
     if (!confirm("Remove this image?")) return;
+
     try {
       const res = await fetch(`${API}/api/products/id/${productId}/image`, {
         method: "DELETE",
@@ -1274,14 +1288,23 @@ function ManageTab() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageUrl }),
       });
-      if (res.ok) {
-        setEditProduct((prev) => ({
-          ...prev,
-          images: prev.images.filter((img) => img !== imageUrl),
-        }));
-        fetchProducts();
+
+      if (!res.ok) {
+        const err = await res.text();
+        console.error(err);
+        alert("Image delete failed");
+        return;
       }
-    } catch {}
+
+      setEditProduct((prev) => ({
+        ...prev,
+        images: prev.images.filter((img) => img !== imageUrl),
+      }));
+
+      fetchProducts();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
