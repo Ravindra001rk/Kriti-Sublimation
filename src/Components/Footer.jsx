@@ -15,7 +15,7 @@ const FooterLink = ({ to, children }) => (
 
 export default function Footer() {
   return (
-    <footer className="bg-brandBg text-black pt-20 poppins">
+    <footer className="bg-brandBg overflow-hidden relative text-black pt-20 poppins">
       {/* top border */}
       <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-emerald-500 to-transparent"></div>
 
@@ -163,6 +163,25 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>© 2026 Kriti Sublimation. All rights reserved.</p>
         </div>
+      </div>
+
+      {/* behind text */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 w-full overflow-hidden pointer-events-none select-none"
+      >
+        <h1
+          className="whitespace-nowrap text-center w-full font-bold tracking-widest"
+          style={{
+            fontSize: "clamp(40px, 10vw, 130px)",
+            color: "transparent",
+            WebkitTextStroke: "1px rgba(0,0,0,0.08)",
+            lineHeight: 1,
+            transform: "translateY(10%)",
+          }}
+        >
+          Kriti Sublimation
+        </h1>
       </div>
     </footer>
   );
