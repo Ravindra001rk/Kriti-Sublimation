@@ -156,7 +156,6 @@ export default function Products() {
               ))}
             </div>
           </div>
-
           {/* Grid */}
           {filtered.length === 0 ? (
             <p className="text-center text-gray-400">No products found</p>
