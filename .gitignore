@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+src/assets/frontend_assets/*.mp4
+git rm --cached src/assets/frontend_assets/Lanyard.mp4
+git rm --cached src/assets/frontend_assets/KeyRing.mp4
+git rm --cached "src/assets/frontend_assets/button badge.mp4"
