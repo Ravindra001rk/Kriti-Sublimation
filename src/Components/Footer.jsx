@@ -139,6 +139,8 @@ export default function Footer() {
               <FooterLink to="/products">Products</FooterLink>
               <FooterLink to="/about">About Us</FooterLink>
               <FooterLink to="/contact">Contact</FooterLink>
+              <FooterLink to="/gallery">View my photo</FooterLink>
+              <FooterLink to="/IdCardForm">ID Card Form</FooterLink>
             </ul>
           </div>
 

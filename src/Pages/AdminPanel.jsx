@@ -61,7 +61,6 @@ function LoginPage({ onLogin }) {
           }}
         />
       </div>
-
       <div className="relative z-10 w-full max-w-sm">
         <div className="text-center mb-8">
           <div
@@ -87,7 +86,6 @@ function LoginPage({ onLogin }) {
             Sign in to your dashboard
           </p>
         </div>
-
         <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-xl">
           <div className="space-y-4">
             <div>
@@ -139,7 +137,7 @@ function LoginPage({ onLogin }) {
 }
 
 // ─── DESKTOP SIDEBAR ──────────────────────────────────────────────────────────
-function Sidebar({ tab, setTab, onLogout }) {
+function Sidebar({ tab, setTab, onLogout, pendingCount }) {
   const items = [
     {
       id: "upload",
@@ -166,26 +164,18 @@ function Sidebar({ tab, setTab, onLogout }) {
       label: "ID Cards",
       icon: "M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2",
     },
-
     {
       id: "settings",
       label: "Settings",
       icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
     },
-    ,
   ];
 
   return (
     <aside className="hidden md:flex w-56 h-screen bg-white border-r border-gray-200 flex-col shadow-sm flex-shrink-0">
       <div className="p-6 border-b border-gray-100">
-        <div className="flex items-center gap-3">
-          <div>
-            {/* <img src={logo} alt="Logo" className="h-12" /> */}
-            <p className="text-black text-2xl font-bold">Admin Panel</p>
-          </div>
-        </div>
+        <p className="text-black text-2xl font-bold">Admin Panel</p>
       </div>
-
       <nav className="flex-1 p-4 space-y-1">
         {items.map((item) => (
           <button
@@ -193,7 +183,7 @@ function Sidebar({ tab, setTab, onLogout }) {
             onClick={() => setTab(item.id)}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
               tab === item.id
-                ? "text-violet-700 bg-violet-50 "
+                ? "text-violet-700 bg-violet-50"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
             }`}
           >
@@ -210,11 +200,15 @@ function Sidebar({ tab, setTab, onLogout }) {
                 d={item.icon}
               />
             </svg>
-            {item.label}
+            <span className="flex-1 text-left">{item.label}</span>
+            {item.id === "idcards" && pendingCount > 0 && (
+              <span className="bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-4">
+                {pendingCount}
+              </span>
+            )}
           </button>
         ))}
       </nav>
-
       <div className="p-4 border-t border-gray-100">
         <button
           onClick={onLogout}
@@ -241,12 +235,14 @@ function Sidebar({ tab, setTab, onLogout }) {
 }
 
 // ─── MOBILE TOP BAR ───────────────────────────────────────────────────────────
-function MobileTopBar({ tab, onLogout }) {
+function MobileTopBar({ tab, onLogout, setTab }) {
   const titles = {
     upload: "Upload Photo",
     gallery: "All Photos",
     settings: "Settings",
     manage: "Manage",
+    products: "Products",
+    idcards: "ID Cards",
   };
   return (
     <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10">
@@ -271,25 +267,46 @@ function MobileTopBar({ tab, onLogout }) {
         </div>
         <span className="font-bold text-gray-900 text-sm">{titles[tab]}</span>
       </div>
-      <button
-        onClick={onLogout}
-        className="text-red-500 text-xs font-medium flex items-center gap-1"
-      >
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => setTab("settings")}
+          className="text-gray-500 flex items-center"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-          />
-        </svg>
-        Logout
-      </button>
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </button>
+        <button
+          onClick={onLogout}
+          className="text-red-500 text-xs font-medium flex items-center gap-1"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            />
+          </svg>
+          Logout
+        </button>
+      </div>
     </div>
   );
 }
@@ -312,12 +329,11 @@ function MobileBottomNav({ tab, setTab }) {
       label: "ID Cards",
       icon: "M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2",
     },
-
-    {
-      id: "settings",
-      label: "Settings",
-      icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
-    },
+    // {
+    //   id: "settings",
+    //   label: "Settings",
+    //   icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
+    // },
     {
       id: "products",
       label: "Products",
@@ -336,9 +352,7 @@ function MobileBottomNav({ tab, setTab }) {
         <button
           key={item.id}
           onClick={() => setTab(item.id)}
-          className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-all ${
-            tab === item.id ? "text-violet-600" : "text-gray-400"
-          }`}
+          className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-all ${tab === item.id ? "text-violet-600" : "text-gray-400"}`}
         >
           <svg
             className="w-5 h-5"
@@ -422,7 +436,6 @@ function UploadTab() {
       <p className="text-gray-500 text-sm mb-6">
         Attach a photo to a customer's phone number
       </p>
-
       <div className="space-y-5">
         <div>
           <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
@@ -443,7 +456,6 @@ function UploadTab() {
             />
           </div>
         </div>
-
         <div>
           <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
             Photo
@@ -491,7 +503,6 @@ function UploadTab() {
             onChange={(e) => handleFile(e.target.files[0])}
           />
         </div>
-
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
             <p className="text-red-600 text-xs">{error}</p>
@@ -502,12 +513,11 @@ function UploadTab() {
             <p className="text-green-600 text-xs">{success}</p>
           </div>
         )}
-
         <button
           onClick={handleUpload}
           disabled={loading}
           className="w-full py-3.5 rounded-xl font-semibold text-sm text-white shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #FE6E4D, #CC1267" }}
+          style={{ background: "linear-gradient(135deg, #FE6E4D, #CC1267)" }}
         >
           {loading ? "Uploading..." : "Upload Photo"}
         </button>
@@ -581,55 +591,43 @@ function GalleryTab() {
 
   return (
     <div className="w-full">
-      {" "}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-        {" "}
         <div>
-          {" "}
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-1">
-            {" "}
-            All Photos{" "}
-          </h2>{" "}
-          <p className="text-gray-500 text-sm">
-            {photos.length} photos total
-          </p>{" "}
-        </div>{" "}
+            All Photos
+          </h2>
+          <p className="text-gray-500 text-sm">{photos.length} photos total</p>
+        </div>
         <input
           type="text"
           placeholder="Search by phone..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors placeholder-gray-400 w-full sm:w-52 shadow-sm"
-        />{" "}
-      </div>{" "}
+        />
+      </div>
       {filtered.length === 0 ? (
         <div className="text-center py-20">
-          {" "}
-          <p className="text-gray-400">No photos found</p>{" "}
+          <p className="text-gray-400">No photos found</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-          {" "}
           {filtered.map((photo) => (
             <div
               key={photo._id}
               className="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:shadow-md transition-all shadow-sm"
             >
-              {" "}
               <div className="relative group">
-                {" "}
                 <img
                   src={photo.imageUrl}
                   alt="photo"
                   className="w-full h-46 sm:h-54 object-cover object-top cursor-pointer"
                   onClick={() => window.open(photo.imageUrl, "_blank")}
-                />{" "}
-              </div>{" "}
+                />
+              </div>
               <div className="p-2.5 sm:p-3">
-                {" "}
                 {editId === photo._id ? (
                   <div className="flex gap-1.5 mb-2">
-                    {" "}
                     <input
                       type="tel"
                       value={editPhone}
@@ -639,34 +637,29 @@ function GalleryTab() {
                         )
                       }
                       className="flex-1 bg-brandBg-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-900 text-xs outline-none focus:border-violet-400 min-w-0"
-                    />{" "}
+                    />
                     <button
                       onClick={() => handleUpdate(photo._id)}
                       className="px-2 py-1.5 rounded-lg text-xs font-semibold text-white bg-violet-600 hover:bg-violet-500 flex-shrink-0"
                     >
-                      {" "}
-                      ✓{" "}
-                    </button>{" "}
+                      ✓
+                    </button>
                     <button
                       onClick={() => setEditId(null)}
                       className="px-2 py-1.5 rounded-lg text-xs text-gray-400 hover:text-gray-600 flex-shrink-0"
                     >
-                      {" "}
-                      ✕{" "}
-                    </button>{" "}
+                      ✕
+                    </button>
                   </div>
                 ) : (
                   <p className="text-gray-800 text-xs sm:text-sm font-semibold mb-1 truncate">
-                    {" "}
-                    📱 {photo.phone}{" "}
+                    📱 {photo.phone}
                   </p>
-                )}{" "}
+                )}
                 <p className="text-gray-400 text-xs mb-2.5 truncate">
-                  {" "}
-                  🕒 {formatDate(photo.createdAt)}{" "}
-                </p>{" "}
+                  🕒 {formatDate(photo.createdAt)}
+                </p>
                 <div className="flex gap-1.5">
-                  {" "}
                   <button
                     onClick={() => {
                       setEditId(photo._id);
@@ -674,22 +667,20 @@ function GalleryTab() {
                     }}
                     className="flex-1 py-1.5 rounded-lg text-xs font-medium text-violet-600 bg-violet-50 hover:bg-violet-100 transition-colors"
                   >
-                    {" "}
-                    Edit{" "}
-                  </button>{" "}
+                    Edit
+                  </button>
                   <button
                     onClick={() => handleDelete(photo._id)}
                     className="flex-1 py-1.5 rounded-lg text-xs font-medium text-red-500 bg-red-50 hover:bg-red-100 transition-colors"
                   >
-                    {" "}
-                    Delete{" "}
-                  </button>{" "}
-                </div>{" "}
-              </div>{" "}
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
-          ))}{" "}
+          ))}
         </div>
-      )}{" "}
+      )}
     </div>
   );
 }
@@ -741,7 +732,6 @@ function SettingsTab() {
         Settings
       </h2>
       <p className="text-gray-500 text-sm mb-6">Manage your admin account</p>
-
       <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-sm">
         <h3 className="text-sm font-semibold text-gray-700 mb-5">
           Change Password
@@ -765,7 +755,6 @@ function SettingsTab() {
               />
             </div>
           ))}
-
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
               <p className="text-red-600 text-xs">{error}</p>
@@ -776,7 +765,6 @@ function SettingsTab() {
               <p className="text-green-600 text-xs">{success}</p>
             </div>
           )}
-
           <button
             onClick={handleReset}
             disabled={loading}
@@ -790,35 +778,45 @@ function SettingsTab() {
   );
 }
 
-// ProductsCustomize TAb ───────────────────────────────────────────────────────────────
-function ProductsCustomize() {
-  return <h1>thi is products..</h1>;
-}
-// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+// ─── DASHBOARD ────────────────────────────────────────────────────────────────
 function Dashboard({ onLogout }) {
   const [tab, setTab] = useState("upload");
+  const [pendingCount, setPendingCount] = useState(0);
+
+  const refreshPendingCount = () => {
+    fetch(`${API}/api/id-applications/all?type=office&status=Pending`, {
+      credentials: "include",
+    })
+      .then((r) => r.json())
+      .then((data) => Array.isArray(data) && setPendingCount(data.length))
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    refreshPendingCount();
+  }, []);
 
   return (
     <div className="flex min-h-[calc(100dvh-4rem)] lg:min-h-[calc(100dvh-4rem)] bg-gray-50">
-      {/* Desktop sidebar */}
-      <Sidebar tab={tab} setTab={setTab} onLogout={onLogout} />
-
-      {/* Main content */}
+      <Sidebar
+        tab={tab}
+        setTab={setTab}
+        onLogout={onLogout}
+        pendingCount={pendingCount}
+      />
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile top bar */}
-        <MobileTopBar tab={tab} onLogout={onLogout} />
-
+        <MobileTopBar tab={tab} onLogout={onLogout} setTab={setTab} />
         <main className="flex-1 p-4 sm:p-6 md:p-8 pb-24 md:pb-8 overflow-auto">
           {tab === "upload" && <UploadTab />}
           {tab === "gallery" && <GalleryTab />}
           {tab === "settings" && <SettingsTab />}
           {tab === "products" && <ProductsTab />}
           {tab === "manage" && <ManageTab />}
-          {tab === "idcards" && <IDCardTab />}
+          {tab === "idcards" && (
+            <IDCardTab onStatusChange={refreshPendingCount} />
+          )}
         </main>
       </div>
-
-      {/* Mobile bottom nav */}
       <MobileBottomNav tab={tab} setTab={setTab} />
     </div>
   );
@@ -847,6 +845,7 @@ export default function AdminPanel() {
   return <Dashboard onLogout={handleLogout} />;
 }
 
+// ─── PRODUCTS TAB ─────────────────────────────────────────────────────────────
 function ProductsTab() {
   const [form, setForm] = useState({
     name: "",
@@ -861,21 +860,7 @@ function ProductsTab() {
   const [error, setError] = useState("");
   const [products, setProducts] = useState([]);
   const [view, setView] = useState("upload");
-  const [editProduct, setEditProduct] = useState(null);
-
-  const [editForm, setEditForm] = useState({
-    name: "",
-    shortDesc: "",
-    longDesc: "",
-    category: "",
-  });
-  const [editLoading, setEditLoading] = useState(false);
-  const [editSuccess, setEditSuccess] = useState("");
-  const [editError, setEditError] = useState("");
-  const [editFiles, setEditFiles] = useState([]);
-  const [editPreviews, setEditPreviews] = useState([]);
   const fileRef = useRef();
-  const editFileRef = useRef();
 
   const categories = [
     "T-Shirts",
@@ -912,11 +897,9 @@ function ProductsTab() {
     setLoading(true);
     setError("");
     setSuccess("");
-
     const formData = new FormData();
     Object.entries(form).forEach(([k, v]) => formData.append(k, v));
     files.forEach((f) => formData.append("images", f));
-
     try {
       const res = await fetch(`${API}/api/products/upload`, {
         method: "POST",
@@ -940,95 +923,8 @@ function ProductsTab() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this product?")) return;
-    await fetch(`${API}/api/products/id/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    setProducts((p) => p.filter((pr) => pr._id !== id));
-  };
-
-  const openEdit = (product) => {
-    setEditProduct(product);
-    setEditForm({
-      name: product.name,
-      shortDesc: product.shortDesc || "",
-      longDesc: product.longDesc || "",
-      category: product.category,
-    });
-    setEditFiles([]);
-    setEditPreviews([]);
-    setEditSuccess("");
-    setEditError("");
-  };
-
-  const closeEdit = () => {
-    setEditProduct(null);
-  };
-
-  const handleEditFile = (fileList) => {
-    const arr = Array.from(fileList);
-    setEditFiles(arr);
-    setEditPreviews(arr.map((f) => URL.createObjectURL(f)));
-  };
-
-  const handleEditSave = async () => {
-    if (!editForm.name || !editForm.shortDesc || !editForm.category)
-      return setEditError("Fill all fields");
-    setEditLoading(true);
-    setEditError("");
-    setEditSuccess("");
-
-    const formData = new FormData();
-    Object.entries(editForm).forEach(([k, v]) => formData.append(k, v));
-    editFiles.forEach((f) => formData.append("images", f));
-
-    try {
-      const res = await fetch(`${API}/api/products/id/${editProduct._id}`, {
-        method: "PATCH",
-        credentials: "include",
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok) setEditError(data.error);
-      else {
-        setEditSuccess("Product updated!");
-        fetchProducts();
-        setTimeout(() => closeEdit(), 1000);
-      }
-    } catch (err) {
-      setEditError(err.message);
-    } finally {
-      setEditLoading(false);
-    }
-  };
-
-  const handleDeleteImage = async (productId, imageUrl) => {
-    if (!confirm("Remove this image?")) return;
-    try {
-      const res = await fetch(`${API}/api/products/id/${productId}/image`, {
-        method: "DELETE",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setEditProduct((prev) => ({
-          ...prev,
-          images: prev.images.filter((img) => img !== imageUrl),
-        }));
-        fetchProducts();
-      }
-    } catch {}
-  };
-
   return (
     <div className="w-full">
-      {/* Toggle */}
-
-      {/* ── Upload View ── */}
       {view === "upload" && (
         <div className="max-w-xl">
           <div className="space-y-4">
@@ -1080,7 +976,6 @@ function ProductsTab() {
               className="hidden"
               onChange={(e) => handleFile(e.target.files)}
             />
-
             <div>
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                 Product Name
@@ -1093,7 +988,6 @@ function ProductsTab() {
                 className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors placeholder-gray-400 shadow-sm"
               />
             </div>
-
             <div>
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                 Short Description{" "}
@@ -1111,7 +1005,6 @@ function ProductsTab() {
                 className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors placeholder-gray-400 shadow-sm resize-none"
               />
             </div>
-
             <div>
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                 Long Description{" "}
@@ -1127,7 +1020,6 @@ function ProductsTab() {
                 className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors placeholder-gray-400 shadow-sm resize-none"
               />
             </div>
-
             <div>
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                 Category
@@ -1145,7 +1037,6 @@ function ProductsTab() {
                 ))}
               </select>
             </div>
-
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
                 <p className="text-red-600 text-xs">{error}</p>
@@ -1156,7 +1047,6 @@ function ProductsTab() {
                 <p className="text-green-600 text-xs">{success}</p>
               </div>
             )}
-
             <button
               onClick={handleUpload}
               disabled={loading}
@@ -1170,14 +1060,12 @@ function ProductsTab() {
           </div>
         </div>
       )}
-
-      {/* ── Manage View ── */}
     </div>
   );
 }
 
+// ─── MANAGE TAB ───────────────────────────────────────────────────────────────
 function ManageTab() {
-  // const API = "";
   const [products, setProducts] = useState([]);
   const [editProduct, setEditProduct] = useState(null);
   const [editForm, setEditForm] = useState({
@@ -1218,20 +1106,15 @@ function ManageTab() {
 
   const handleDelete = async (id) => {
     if (!confirm("Delete this product?")) return;
-
     try {
       const res = await fetch(`${API}/api/products/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
-
       if (!res.ok) {
-        const err = await res.text();
-        console.error(err);
         alert("Delete failed");
         return;
       }
-
       setProducts((p) => p.filter((pr) => pr._id !== id));
     } catch (err) {
       console.error(err);
@@ -1266,11 +1149,9 @@ function ManageTab() {
     setEditLoading(true);
     setEditError("");
     setEditSuccess("");
-
     const formData = new FormData();
     Object.entries(editForm).forEach(([k, v]) => formData.append(k, v));
     editFiles.forEach((f) => formData.append("images", f));
-
     try {
       const res = await fetch(`${API}/api/products/id/${editProduct._id}`, {
         method: "PATCH",
@@ -1293,7 +1174,6 @@ function ManageTab() {
 
   const handleDeleteImage = async (productId, imageUrl) => {
     if (!confirm("Remove this image?")) return;
-
     try {
       const res = await fetch(`${API}/api/products/id/${productId}/image`, {
         method: "DELETE",
@@ -1301,19 +1181,14 @@ function ManageTab() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageUrl }),
       });
-
       if (!res.ok) {
-        const err = await res.text();
-        console.error(err);
         alert("Image delete failed");
         return;
       }
-
       setEditProduct((prev) => ({
         ...prev,
         images: prev.images.filter((img) => img !== imageUrl),
       }));
-
       fetchProducts();
     } catch (err) {
       console.error(err);
@@ -1322,7 +1197,6 @@ function ManageTab() {
 
   return (
     <div className="w-full">
-      {/* Products Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((product) => (
           <div
@@ -1359,7 +1233,6 @@ function ManageTab() {
         ))}
       </div>
 
-      {/* Edit Modal */}
       {editProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="relative mx-auto bg-white rounded-2xl w-full max-w-lg shadow-2xl">
@@ -1372,9 +1245,7 @@ function ManageTab() {
                 ✕
               </button>
             </div>
-
             <div className="p-4 space-y-2">
-              {/* Existing Images */}
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                   Current Images
@@ -1396,8 +1267,6 @@ function ManageTab() {
                   ))}
                 </div>
               </div>
-
-              {/* Add More Images */}
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                   Add More Images
@@ -1432,8 +1301,6 @@ function ManageTab() {
                   onChange={(e) => handleEditFile(e.target.files)}
                 />
               </div>
-
-              {/* Fields */}
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                   Product Name
@@ -1447,7 +1314,6 @@ function ManageTab() {
                   className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors shadow-sm"
                 />
               </div>
-
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                   Short Description
@@ -1461,7 +1327,6 @@ function ManageTab() {
                   className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors shadow-sm resize-none"
                 />
               </div>
-
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                   Long Description
@@ -1475,7 +1340,6 @@ function ManageTab() {
                   className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors shadow-sm resize-none"
                 />
               </div>
-
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
                   Category
@@ -1494,7 +1358,6 @@ function ManageTab() {
                   ))}
                 </select>
               </div>
-
               {editError && (
                 <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
                   <p className="text-red-600 text-xs">{editError}</p>
@@ -1505,7 +1368,6 @@ function ManageTab() {
                   <p className="text-green-600 text-xs">{editSuccess}</p>
                 </div>
               )}
-
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={closeEdit}
@@ -1532,17 +1394,12 @@ function ManageTab() {
   );
 }
 
-// ─── ID CARD TAB ─────────────────────────────────────────────────────────────
-// Add this function to AdminPanel.jsx
-// Then add id: "idcards" to Sidebar items, MobileBottomNav items
-// And add {tab === "idcards" && <IDCardTab />} in Dashboard main
-
-function IDCardTab() {
+// ─── ID CARD TAB ──────────────────────────────────────────────────────────────
+function IDCardTab({ onStatusChange }) {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [filterType, setFilterType] = useState("");
   const [expanded, setExpanded] = useState(null);
   const [statusForm, setStatusForm] = useState({});
   const [saving, setSaving] = useState(null);
@@ -1577,7 +1434,7 @@ function IDCardTab() {
     try {
       const params = new URLSearchParams();
       if (filterStatus) params.append("status", filterStatus);
-      if (filterType) params.append("type", filterType);
+      params.append("type", "office");
       if (search) params.append("search", search);
       const res = await fetch(`${API}/api/id-applications/all?${params}`, {
         credentials: "include",
@@ -1585,7 +1442,6 @@ function IDCardTab() {
       const data = await res.json();
       if (res.ok) {
         setApplications(data);
-        // Init status forms
         const forms = {};
         data.forEach((app) => {
           forms[app._id] = {
@@ -1608,7 +1464,7 @@ function IDCardTab() {
 
   useEffect(() => {
     fetchApplications();
-  }, [filterStatus, filterType]);
+  }, [filterStatus]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -1644,7 +1500,8 @@ function IDCardTab() {
       });
       if (res.ok) {
         setSaveSuccess(app._id);
-        fetchApplications();
+        await fetchApplications();
+        onStatusChange();
         setTimeout(() => setSaveSuccess(null), 2000);
       }
     } catch (err) {
@@ -1653,6 +1510,7 @@ function IDCardTab() {
       setSaving(null);
     }
   };
+
   const handleDelete = async (id) => {
     if (!confirm("Delete this application? This cannot be undone.")) return;
     try {
@@ -1663,18 +1521,19 @@ function IDCardTab() {
       if (res.ok) {
         setApplications((prev) => prev.filter((a) => a._id !== id));
         setExpanded(null);
+        onStatusChange();
       }
     } catch (err) {
       console.error(err);
     }
   };
+
   const pendingCount = applications.filter(
     (a) => a.status === "Pending",
   ).length;
 
   return (
     <div className="w-full">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
@@ -1691,7 +1550,6 @@ function IDCardTab() {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <form onSubmit={handleSearch} className="flex gap-2 flex-1">
           <input
@@ -1721,18 +1579,8 @@ function IDCardTab() {
             </option>
           ))}
         </select>
-        <select
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-          className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-violet-400 shadow-sm"
-        >
-          <option value="">All Types</option>
-          <option value="office">Office</option>
-          <option value="school">School</option>
-        </select>
       </div>
 
-      {/* Applications List */}
       {loading ? (
         <p className="text-gray-400 animate-pulse">Loading applications...</p>
       ) : applications.length === 0 ? (
@@ -1746,14 +1594,12 @@ function IDCardTab() {
               key={app._id}
               className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden"
             >
-              {/* Row — click to expand */}
               <div
                 className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() =>
                   setExpanded(expanded === app._id ? null : app._id)
                 }
               >
-                {/* Photo */}
                 <img
                   src={app.photo}
                   alt="photo"
@@ -1763,8 +1609,6 @@ function IDCardTab() {
                     window.open(app.photo, "_blank");
                   }}
                 />
-
-                {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-sm font-semibold text-gray-900 truncate">
@@ -1782,8 +1626,6 @@ function IDCardTab() {
                     {new Date(app.createdAt).toLocaleDateString("en-NP")}
                   </p>
                 </div>
-
-                {/* Status Badge */}
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span
                     className={`text-xs font-semibold px-3 py-1 rounded-full ${statusColors[app.status] || "bg-gray-100 text-gray-700"}`}
@@ -1806,17 +1648,15 @@ function IDCardTab() {
                 </div>
               </div>
 
-              {/* Expanded Details */}
               {expanded === app._id && (
                 <div className="border-t border-gray-100 p-4 space-y-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {/* Left — Application Details */}
+                    {/* Left — Details */}
                     <div>
                       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
                         Application Details
                       </p>
                       <div className="space-y-2">
-                        {/* Photo + Sign */}
                         <div className="flex gap-3 mb-3">
                           <div>
                             <p className="text-xs text-gray-400 mb-1">Photo</p>
@@ -1839,7 +1679,6 @@ function IDCardTab() {
                             </div>
                           )}
                         </div>
-
                         {[
                           ["Submission ID", app.submissionId],
                           ["Office", app.officeName],
@@ -1880,7 +1719,6 @@ function IDCardTab() {
                       </p>
                       {statusForm[app._id] && (
                         <div className="space-y-3">
-                          {/* Status Dropdown */}
                           <div>
                             <label className="text-xs font-semibold text-gray-500 block mb-1">
                               Status
@@ -1904,7 +1742,6 @@ function IDCardTab() {
                             </select>
                           </div>
 
-                          {/* Rejection Reason — only if Rejected */}
                           {statusForm[app._id].status === "Rejected" && (
                             <div>
                               <label className="text-xs font-semibold text-red-500 block mb-1">
@@ -1926,7 +1763,6 @@ function IDCardTab() {
                             </div>
                           )}
 
-                          {/* Estimated Date */}
                           <div>
                             <label className="text-xs font-semibold text-gray-500 block mb-1">
                               Estimated Collection Date
@@ -1945,7 +1781,6 @@ function IDCardTab() {
                             />
                           </div>
 
-                          {/* Admin Notes */}
                           <div>
                             <label className="text-xs font-semibold text-gray-500 block mb-1">
                               Admin Notes (internal only)
@@ -1965,7 +1800,6 @@ function IDCardTab() {
                             />
                           </div>
 
-                          {/* Status Timeline */}
                           {app.statusTimeline &&
                             app.statusTimeline.length > 0 && (
                               <div>
@@ -2004,7 +1838,6 @@ function IDCardTab() {
                               </div>
                             )}
 
-                          {/* Save Button */}
                           <button
                             onClick={() => handleSaveStatus(app)}
                             disabled={saving === app._id}
@@ -2020,7 +1853,7 @@ function IDCardTab() {
                                 ? "✓ Saved!"
                                 : "Save Status"}
                           </button>
-                          {/* delete */}
+
                           <button
                             onClick={() => handleDelete(app._id)}
                             className="w-full py-3 rounded-xl text-sm font-semibold text-red-500 bg-red-50 hover:bg-red-100 transition"

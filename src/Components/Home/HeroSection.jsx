@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { FlipWords } from "./FlipWords";
 import { LiaLongArrowAltDownSolid } from "react-icons/lia";
 import CTAButton from "../CTAButton";
+import HeroBtn from "../HeroBtn_photo";
+import HeroBtn_idCard from "../HeroBtn_idCard";
 
 const HeroSection = () => {
   return (
@@ -100,47 +102,10 @@ const HeroSection = () => {
           />
         </div>
 
-        {/* Scroll down components */}
-
-        <div>
-          <div className="h-full w-full cursor-pointer md:pt-22 pt-42 pb-12 flex justify-center items-center">
-            {/* <div className="relative w-32 h-32 flex items-center justify-center">
-              <svg
-                viewBox="0 0 200 200"
-                className="absolute w-full h-full rotating-text"
-              >
-                <defs>
-                  <path
-                    id="circlePath"
-                    d="
-                M 100,100
-                m -70,0
-                a 70,70 0 1,1 140,0
-                a 70,70 0 1,1 -140,0
-              "
-                  />
-                </defs>
-
-                <text
-                  fill="black"
-                  fontSize="14"
-                  fontWeight="600"
-                  letterSpacing="4"
-                >
-                  <textPath href="#circlePath" startOffset="0%">
-                    • SCROLL • DOWN • SCROLL • DOWN • SCROLL
-                  </textPath>
-                </text>
-              </svg>
-
-              <LiaLongArrowAltDownSolid className="text-3xl" />
-            </div> */}
-
-            {/* CTA Button */}
-
-            <div className="">
-              
-            </div>
+        <div className="h-full px-6 w-full cursor-pointer md:pt-22 pt-12 pb-12 flex justify-center items-center">
+          <div className="flex flex-col justify-center md:flex-row gap-4 w-full max-w-md md:max-w-none">
+            <HeroBtn_idCard />
+            <HeroBtn />
           </div>
         </div>
       </div>

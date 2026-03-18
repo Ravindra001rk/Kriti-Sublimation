@@ -46,13 +46,39 @@ export default function CTAButton({ className = "" }) {
               height="22"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-              <circle cx="12" cy="13" r="4" />
+              {/* Head */}
+              <circle
+                cx="10"
+                cy="8"
+                r="3"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              />
+
+              {/* Body */}
+              <path
+                d="M4 18c0-3 3-5 6-5s6 2 6 5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+
+              {/* Plus icon */}
+              <circle
+                cx="18"
+                cy="18"
+                r="3"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              />
+              <path
+                d="M18 16.8v2.4M16.8 18h2.4"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
             </svg>
           </span>
 
@@ -61,7 +87,7 @@ export default function CTAButton({ className = "" }) {
             className={`relative z-10 font-semibold text-[0.95rem] tracking-wide whitespace-nowrap transition-colors duration-300
             ${hovered ? "text-white" : "text-[#FF6B1A]"}`}
           >
-            View My Photos
+            Create your Account
           </span>
         </div>
       </button>

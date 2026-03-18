@@ -8,7 +8,7 @@ import UGCHero from "../Components/Home/Ugchero";
 
 const Home = () => {
   return (
-    <div className="w-full bg-brandBg  pt-16">
+    <div className="w-full bg-brandBg  md:pt-10 pt-7">
       <HeroSection />
       <WhyChoose />
       <FeatureProducts />

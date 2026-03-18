@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import ChooseBox from "./HighlightedText";
 import HighlightedText from "./HighlightedText";
 import KeyPoints from "./KeyPoints";
-
+// bg-[#e9e9e9]
 const WhyChoose = () => {
   return (
-    <div className=" bg-[#e9e9e9] mt-23  bordern border-[bg-brandBg] text-black   md:rounded-tl-[4vw] rounded-tl-[12vw] md:rounded-tr-[4vw] rounded-tr-[12vw] md:rounded-bl-[4vw] rounded-bl-[12vw] md:rounded-br-[4vw] rounded-br-[12vw] min-h-[50vh] pt-18 py-6 px-8 md:px-12 ">
+    <div className="  mt-23 bg-white shadow-[0_-4px_10px_rgba(0,0,0,0.1)]  bordern border-[bg-brandBg] text-black   md:rounded-tl-[4vw] rounded-tl-[12vw] md:rounded-tr-[4vw] rounded-tr-[12vw] md:rounded-bl-[4vw] rounded-bl-[12vw] md:rounded-br-[4vw] rounded-br-[12vw] min-h-[50vh] pt-18 py-6 px-8 md:px-12 ">
       <h2
         className="text-4xl  sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-tight poppins 
               bg-gradient-to-br from-[#FE6E4D] to-[#CC1267]  py-2
