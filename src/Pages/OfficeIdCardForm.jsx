@@ -194,6 +194,42 @@ const OfficeIdCardForm = () => {
           <p className="text-sm text-gray-400 mb-6">
             Save this ID to check your application status.
           </p>
+          {/* Submitted Details Summary */}
+          <div className="text-left border border-gray-100 rounded-2xl overflow-hidden mb-4">
+            <div className="bg-red-600 text-white text-center py-2 px-4">
+              <p className="font-bold">{form.officeName || "—"}</p>
+            </div>
+            <div className="bg-blue-800 text-white text-center py-1.5 px-4">
+              <p className="text-sm font-bold">कर्मचारी परिचय-पत्र</p>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {[
+                [
+                  "Employee Name / कर्मचारीको नाम",
+                  `${form.employeeName} / ${form.employeeNameNepali}`,
+                ],
+                [
+                  "Designation / पद",
+                  `${form.designation} / ${form.designationNepali}`,
+                ],
+                ["Citizenship No", form.citizenshipNo],
+                ["Contact No", form.contactNo],
+                ["Blood Group", form.bloodGroup],
+                ["Permanent Address", form.permanentAddress],
+              ]
+                .filter(([, v]) => v && v !== " / ")
+                .map(([label, value]) => (
+                  <div key={label} className="flex gap-2 px-4 py-2">
+                    <span className="text-xs text-gray-400 w-2/5 flex-shrink-0">
+                      {label}
+                    </span>
+                    <span className="text-xs text-gray-800 font-medium">
+                      {value}
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
           <div className="flex gap-3">
             {/* Check Status (Primary now) */}
             <Link to="/status" className="w-1/2">
@@ -382,7 +418,7 @@ const OfficeIdCardForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field
                 label="Permanent Address"
-                nepali="स्थायी ठेगाना"
+                // nepali="स्थायी ठेगाना"
                 name="permanentAddress"
                 value={form.permanentAddress}
                 onChange={handleChange}

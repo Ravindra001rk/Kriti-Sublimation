@@ -156,18 +156,22 @@ const FormStatus = () => {
           transition={{ delay: 0.1 }}
           className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-6"
         >
-          <form onSubmit={handleCheck} className="flex gap-3">
+          <form
+            onSubmit={handleCheck}
+            className="flex flex-col sm:flex-row gap-3"
+          >
+            {" "}
             <input
               type="text"
               value={submissionId}
               onChange={(e) => setSubmissionId(e.target.value)}
               placeholder="e.g. hari123"
-              className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#FE6E4D] focus:ring-2 focus:ring-[#FE6E4D]/20 transition text-gray-800 font-poppins"
+              className="flex-1 lowercase px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#FE6E4D] focus:ring-2 focus:ring-[#FE6E4D]/20 transition text-gray-800 font-poppins"
             />
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#FE6E4D] to-[#CC1267] text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#FE6E4D] to-[#CC1267] text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
             >
               {loading ? (
                 <svg
@@ -226,7 +230,8 @@ const FormStatus = () => {
             >
               {/* Banner */}
               <div className="bg-gradient-to-r poppins from-[#FE6E4D] to-[#CC1267] p-6 text-white">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  {" "}
                   <div>
                     <p className="text-white/70 text-xs mb-1">Submission ID</p>
                     <p className="text-2xl font-bold font-poppins">
@@ -257,7 +262,7 @@ const FormStatus = () => {
                   {data.status === "Rejected" && data.rejectionReason && (
                     <div className="mt-3 bg-red-50 border border-red-200 rounded-xl p-4">
                       <p className="text-sm font-semibold text-red-700 mb-1">
-                        Reason for Rejection:
+                        Reason for Rejection (Edit and submit again):
                       </p>
                       <p className="text-sm text-red-600">
                         {data.rejectionReason}
@@ -282,7 +287,7 @@ const FormStatus = () => {
                 </div>
 
                 {/* Status Timeline */}
-                {data.statusTimeline && data.statusTimeline.length > 0 && (
+                {/* {data.statusTimeline && data.statusTimeline.length > 0 && (
                   <div>
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
                       Status Timeline
@@ -310,7 +315,7 @@ const FormStatus = () => {
                       ))}
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {/* Submitted Details */}
                 {/* Submitted Details - ID Card Style */}

@@ -162,6 +162,12 @@ function Sidebar({ tab, setTab, onLogout }) {
       icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4",
     },
     {
+      id: "idcards",
+      label: "ID Cards",
+      icon: "M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2",
+    },
+
+    {
       id: "settings",
       label: "Settings",
       icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
@@ -301,6 +307,12 @@ function MobileBottomNav({ tab, setTab }) {
       label: "Photos",
       icon: "M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z",
     },
+    {
+      id: "idcards",
+      label: "ID Cards",
+      icon: "M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2",
+    },
+
     {
       id: "settings",
       label: "Settings",
@@ -802,6 +814,7 @@ function Dashboard({ onLogout }) {
           {tab === "settings" && <SettingsTab />}
           {tab === "products" && <ProductsTab />}
           {tab === "manage" && <ManageTab />}
+          {tab === "idcards" && <IDCardTab />}
         </main>
       </div>
 
@@ -1203,27 +1216,27 @@ function ManageTab() {
     fetchProducts();
   }, []);
 
-const handleDelete = async (id) => {
-  if (!confirm("Delete this product?")) return;
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this product?")) return;
 
-  try {
-    const res = await fetch(`${API}/api/products/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    try {
+      const res = await fetch(`${API}/api/products/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
-    if (!res.ok) {
-      const err = await res.text();
+      if (!res.ok) {
+        const err = await res.text();
+        console.error(err);
+        alert("Delete failed");
+        return;
+      }
+
+      setProducts((p) => p.filter((pr) => pr._id !== id));
+    } catch (err) {
       console.error(err);
-      alert("Delete failed");
-      return;
     }
-
-    setProducts((p) => p.filter((pr) => pr._id !== id));
-  } catch (err) {
-    console.error(err);
-  }
-};
+  };
 
   const openEdit = (product) => {
     setEditProduct(product);
@@ -1513,6 +1526,515 @@ const handleDelete = async (id) => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── ID CARD TAB ─────────────────────────────────────────────────────────────
+// Add this function to AdminPanel.jsx
+// Then add id: "idcards" to Sidebar items, MobileBottomNav items
+// And add {tab === "idcards" && <IDCardTab />} in Dashboard main
+
+function IDCardTab() {
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [expanded, setExpanded] = useState(null);
+  const [statusForm, setStatusForm] = useState({});
+  const [saving, setSaving] = useState(null);
+  const [saveSuccess, setSaveSuccess] = useState(null);
+
+  const statuses = [
+    "Pending",
+    "Approved",
+    "Rejected",
+    "Printing",
+    "Ready for Collection",
+  ];
+
+  const statusColors = {
+    Pending: "bg-yellow-100 text-yellow-700",
+    Approved: "bg-blue-100 text-blue-700",
+    Rejected: "bg-red-100 text-red-700",
+    Printing: "bg-purple-100 text-purple-700",
+    "Ready for Collection": "bg-green-100 text-green-700",
+  };
+
+  const statusIcons = {
+    Pending: "⏳",
+    Approved: "✅",
+    Rejected: "❌",
+    Printing: "🖨️",
+    "Ready for Collection": "🎉",
+  };
+
+  const fetchApplications = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (filterStatus) params.append("status", filterStatus);
+      if (filterType) params.append("type", filterType);
+      if (search) params.append("search", search);
+      const res = await fetch(`${API}/api/id-applications/all?${params}`, {
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setApplications(data);
+        // Init status forms
+        const forms = {};
+        data.forEach((app) => {
+          forms[app._id] = {
+            status: app.status,
+            rejectionReason: app.rejectionReason || "",
+            estimatedDate: app.estimatedDate
+              ? app.estimatedDate.split("T")[0]
+              : "",
+            adminNotes: app.adminNotes || "",
+          };
+        });
+        setStatusForm(forms);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApplications();
+  }, [filterStatus, filterType]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchApplications();
+  };
+
+  const handleFormChange = (id, field, value) => {
+    setStatusForm((prev) => ({
+      ...prev,
+      [id]: { ...prev[id], [field]: value },
+    }));
+  };
+
+  const handleSaveStatus = async (app) => {
+    const f = statusForm[app._id];
+    if (f.status === "Rejected" && !f.rejectionReason.trim()) {
+      alert("Please enter rejection reason");
+      return;
+    }
+    setSaving(app._id);
+    setSaveSuccess(null);
+    try {
+      const res = await fetch(`${API}/api/id-applications/${app._id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          status: f.status,
+          rejectionReason: f.rejectionReason,
+          estimatedDate: f.estimatedDate,
+          adminNotes: f.adminNotes,
+        }),
+      });
+      if (res.ok) {
+        setSaveSuccess(app._id);
+        fetchApplications();
+        setTimeout(() => setSaveSuccess(null), 2000);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSaving(null);
+    }
+  };
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this application? This cannot be undone.")) return;
+    try {
+      const res = await fetch(`${API}/api/id-applications/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        setApplications((prev) => prev.filter((a) => a._id !== id));
+        setExpanded(null);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const pendingCount = applications.filter(
+    (a) => a.status === "Pending",
+  ).length;
+
+  return (
+    <div className="w-full">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+            ID Card Applications
+            {pendingCount > 0 && (
+              <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {pendingCount} pending
+              </span>
+            )}
+          </h2>
+          <p className="text-gray-500 text-sm">
+            {applications.length} total applications
+          </p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <form onSubmit={handleSearch} className="flex gap-2 flex-1">
+          <input
+            type="text"
+            placeholder="Search by name or submission ID..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors placeholder-gray-400 shadow-sm"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2.5 rounded-xl text-sm font-semibold text-white shadow-sm"
+            style={{ background: "linear-gradient(135deg, #7c3aed, #db2777)" }}
+          >
+            Search
+          </button>
+        </form>
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-violet-400 shadow-sm"
+        >
+          <option value="">All Statuses</option>
+          {statuses.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-violet-400 shadow-sm"
+        >
+          <option value="">All Types</option>
+          <option value="office">Office</option>
+          <option value="school">School</option>
+        </select>
+      </div>
+
+      {/* Applications List */}
+      {loading ? (
+        <p className="text-gray-400 animate-pulse">Loading applications...</p>
+      ) : applications.length === 0 ? (
+        <div className="text-center py-20">
+          <p className="text-gray-400">No applications found</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {applications.map((app) => (
+            <div
+              key={app._id}
+              className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden"
+            >
+              {/* Row — click to expand */}
+              <div
+                className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() =>
+                  setExpanded(expanded === app._id ? null : app._id)
+                }
+              >
+                {/* Photo */}
+                <img
+                  src={app.photo}
+                  alt="photo"
+                  className="w-10 h-12 object-cover rounded-lg border border-gray-100 flex-shrink-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(app.photo, "_blank");
+                  }}
+                />
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-sm font-semibold text-gray-900 truncate">
+                      {app.employeeName || app.studentName}
+                    </p>
+                    <span className="text-xs text-gray-400 font-mono">
+                      {app.submissionId}
+                    </span>
+                    <span className="text-xs text-gray-400 capitalize bg-gray-100 px-2 py-0.5 rounded-full">
+                      {app.type}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {app.officeName || app.schoolName} •{" "}
+                    {new Date(app.createdAt).toLocaleDateString("en-NP")}
+                  </p>
+                </div>
+
+                {/* Status Badge */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span
+                    className={`text-xs font-semibold px-3 py-1 rounded-full ${statusColors[app.status] || "bg-gray-100 text-gray-700"}`}
+                  >
+                    {statusIcons[app.status]} {app.status}
+                  </span>
+                  <svg
+                    className={`w-4 h-4 text-gray-400 transition-transform ${expanded === app._id ? "rotate-180" : ""}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Expanded Details */}
+              {expanded === app._id && (
+                <div className="border-t border-gray-100 p-4 space-y-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {/* Left — Application Details */}
+                    <div>
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+                        Application Details
+                      </p>
+                      <div className="space-y-2">
+                        {/* Photo + Sign */}
+                        <div className="flex gap-3 mb-3">
+                          <div>
+                            <p className="text-xs text-gray-400 mb-1">Photo</p>
+                            <img
+                              src={app.photo}
+                              alt="photo"
+                              className="w-16 h-20 object-cover rounded-xl border border-gray-200 cursor-pointer shadow-sm"
+                              onClick={() => window.open(app.photo, "_blank")}
+                            />
+                          </div>
+                          {app.sign && (
+                            <div>
+                              <p className="text-xs text-gray-400 mb-1">Sign</p>
+                              <img
+                                src={app.sign}
+                                alt="sign"
+                                className="w-16 h-20 object-cover rounded-xl border border-gray-200 cursor-pointer shadow-sm"
+                                onClick={() => window.open(app.sign, "_blank")}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {[
+                          ["Submission ID", app.submissionId],
+                          ["Office", app.officeName],
+                          ["Employee Name", app.employeeName],
+                          ["Name (Nepali)", app.employeeNameNepali],
+                          ["Designation", app.designation],
+                          ["Designation (Nepali)", app.designationNepali],
+                          ["Citizenship No", app.citizenshipNo],
+                          ["Contact", app.contactNo],
+                          ["Blood Group", app.bloodGroup],
+                          ["PIS No", app.pisNo],
+                          ["Permanent Address", app.permanentAddress],
+                          ["Address (Nepali)", app.permanentAddressNepali],
+                          ["Other Details", app.otherDetails],
+                          [
+                            "Submitted",
+                            new Date(app.createdAt).toLocaleString("en-NP"),
+                          ],
+                        ]
+                          .filter(([, v]) => v)
+                          .map(([label, value]) => (
+                            <div key={label} className="flex gap-2 text-sm">
+                              <span className="text-gray-400 w-36 flex-shrink-0">
+                                {label}:
+                              </span>
+                              <span className="text-gray-800 font-medium">
+                                {value}
+                              </span>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+
+                    {/* Right — Status Management */}
+                    <div>
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+                        Update Status
+                      </p>
+                      {statusForm[app._id] && (
+                        <div className="space-y-3">
+                          {/* Status Dropdown */}
+                          <div>
+                            <label className="text-xs font-semibold text-gray-500 block mb-1">
+                              Status
+                            </label>
+                            <select
+                              value={statusForm[app._id].status}
+                              onChange={(e) =>
+                                handleFormChange(
+                                  app._id,
+                                  "status",
+                                  e.target.value,
+                                )
+                              }
+                              className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors"
+                            >
+                              {statuses.map((s) => (
+                                <option key={s} value={s}>
+                                  {statusIcons[s]} {s}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          {/* Rejection Reason — only if Rejected */}
+                          {statusForm[app._id].status === "Rejected" && (
+                            <div>
+                              <label className="text-xs font-semibold text-red-500 block mb-1">
+                                Rejection Reason *
+                              </label>
+                              <textarea
+                                value={statusForm[app._id].rejectionReason}
+                                onChange={(e) =>
+                                  handleFormChange(
+                                    app._id,
+                                    "rejectionReason",
+                                    e.target.value,
+                                  )
+                                }
+                                rows={2}
+                                placeholder="Enter reason for rejection..."
+                                className="w-full bg-white border border-red-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-red-400 transition-colors resize-none"
+                              />
+                            </div>
+                          )}
+
+                          {/* Estimated Date */}
+                          <div>
+                            <label className="text-xs font-semibold text-gray-500 block mb-1">
+                              Estimated Collection Date
+                            </label>
+                            <input
+                              type="date"
+                              value={statusForm[app._id].estimatedDate}
+                              onChange={(e) =>
+                                handleFormChange(
+                                  app._id,
+                                  "estimatedDate",
+                                  e.target.value,
+                                )
+                              }
+                              className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors"
+                            />
+                          </div>
+
+                          {/* Admin Notes */}
+                          <div>
+                            <label className="text-xs font-semibold text-gray-500 block mb-1">
+                              Admin Notes (internal only)
+                            </label>
+                            <textarea
+                              value={statusForm[app._id].adminNotes}
+                              onChange={(e) =>
+                                handleFormChange(
+                                  app._id,
+                                  "adminNotes",
+                                  e.target.value,
+                                )
+                              }
+                              rows={2}
+                              placeholder="Internal notes, not visible to customer..."
+                              className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm outline-none focus:border-violet-400 transition-colors resize-none"
+                            />
+                          </div>
+
+                          {/* Status Timeline */}
+                          {app.statusTimeline &&
+                            app.statusTimeline.length > 0 && (
+                              <div>
+                                <label className="text-xs font-semibold text-gray-500 block mb-2">
+                                  Timeline
+                                </label>
+                                <div className="space-y-1.5 max-h-32 overflow-y-auto">
+                                  {[...app.statusTimeline]
+                                    .reverse()
+                                    .map((item, i) => (
+                                      <div
+                                        key={i}
+                                        className="flex items-start gap-2 text-xs"
+                                      >
+                                        <span>
+                                          {statusIcons[item.status] || "•"}
+                                        </span>
+                                        <div>
+                                          <span className="font-semibold text-gray-700">
+                                            {item.status}
+                                          </span>
+                                          <span className="text-gray-400 ml-1">
+                                            {new Date(
+                                              item.changedAt,
+                                            ).toLocaleString("en-NP")}
+                                          </span>
+                                          {item.note && (
+                                            <p className="text-gray-500">
+                                              {item.note}
+                                            </p>
+                                          )}
+                                        </div>
+                                      </div>
+                                    ))}
+                                </div>
+                              </div>
+                            )}
+
+                          {/* Save Button */}
+                          <button
+                            onClick={() => handleSaveStatus(app)}
+                            disabled={saving === app._id}
+                            className="w-full py-3 rounded-xl text-sm font-semibold text-white shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #7c3aed, #db2777)",
+                            }}
+                          >
+                            {saving === app._id
+                              ? "Saving..."
+                              : saveSuccess === app._id
+                                ? "✓ Saved!"
+                                : "Save Status"}
+                          </button>
+                          {/* delete */}
+                          <button
+                            onClick={() => handleDelete(app._id)}
+                            className="w-full py-3 rounded-xl text-sm font-semibold text-red-500 bg-red-50 hover:bg-red-100 transition"
+                          >
+                            🗑️ Delete Application
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
