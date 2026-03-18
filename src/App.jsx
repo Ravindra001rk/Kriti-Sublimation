@@ -42,7 +42,7 @@ function App() {
         <Route path="/IdCardForm" element={<IdCardForm />} />
         <Route path="/OfficeIdCardForm" element={<OfficeIdCardForm />} />
         <Route path="/SchoolIdCardForm" element={<SchoolIdCardForm />} />
-        <Route path="/status" element={<FormStatus />} />
+        <Route path="/status" element={<FormStatus  />} />
         <Route
           path="/IdCardForm/office"
           element={<IdCardForm initialView="office" />}

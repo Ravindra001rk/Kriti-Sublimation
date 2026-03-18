@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import imageCompression from "browser-image-compression";
 
 // ── Outside component to prevent re-mount on keystroke ──
 const Field = ({
@@ -100,16 +101,27 @@ const OfficeIdCardForm = () => {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleFile = (e, type) => {
+  const handleFile = async (e, type) => {
     const file = e.target.files[0];
-    const preview = URL.createObjectURL(file);
+    if (!file) return;
+    setError("");
+
+    const compressed = await imageCompression(file, {
+      maxSizeMB: 0.3,
+      maxWidthOrHeight: 500,
+      useWebWorker: true,
+    });
+
+    const preview = URL.createObjectURL(compressed);
     if (type === "photo") {
-      setPhoto(file);
+      setPhoto(compressed);
       setPhotoPreview(preview);
     } else {
-      setSign(file);
+      setSign(compressed);
       setSignPreview(preview);
     }
+    console.log("Original:", file.size / 1024, "KB");
+    console.log("Compressed:", compressed.size / 1024, "KB");
   };
 
   const handleSubmit = async (e) => {
@@ -134,7 +146,7 @@ const OfficeIdCardForm = () => {
       setSubmissionId(data.submissionId);
       navigator.clipboard.writeText(data.submissionId).catch(() => {});
       setSubmitted(true);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0 });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -279,7 +291,6 @@ const OfficeIdCardForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field
                 label="Employee's Name"
-                nepali="कर्मचारीको नाम"
                 name="employeeName"
                 value={form.employeeName}
                 onChange={handleChange}
@@ -287,8 +298,8 @@ const OfficeIdCardForm = () => {
                 placeholder="Full name in English"
               />
               <Field
-                label="Name in Nepali"
-                nepali="नेपालीमा नाम"
+                label="कर्मचारीको नाम"
+                // nepali="नेपालीमा नाम"
                 name="employeeNameNepali"
                 value={form.employeeNameNepali}
                 onChange={handleChange}
@@ -300,7 +311,6 @@ const OfficeIdCardForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field
                 label="Designation"
-                nepali="पद"
                 name="designation"
                 value={form.designation}
                 onChange={handleChange}
@@ -308,8 +318,8 @@ const OfficeIdCardForm = () => {
                 placeholder="e.g. Manager"
               />
               <Field
-                label="Designation (Nepali)"
-                nepali="पद नेपालीमा"
+                label="पद"
+                // nepali="पद नेपालीमा"
                 name="designationNepali"
                 value={form.designationNepali}
                 onChange={handleChange}
@@ -321,7 +331,7 @@ const OfficeIdCardForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field
                 label="Citizenship No"
-                nepali="ना.प्र.प.नं."
+                // nepali="नागरिकता नं."
                 name="citizenshipNo"
                 value={form.citizenshipNo}
                 onChange={handleChange}
@@ -380,7 +390,7 @@ const OfficeIdCardForm = () => {
                 placeholder="Permanent Address"
               />
               <Field
-                label="Address (Nepali)"
+                label="स्थायी ठेगाना"
                 name="permanentAddressNepali"
                 value={form.permanentAddressNepali}
                 onChange={handleChange}

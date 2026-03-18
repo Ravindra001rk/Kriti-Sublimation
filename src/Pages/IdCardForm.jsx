@@ -67,7 +67,7 @@ const IdCardForm = () => {
       {/* Check Status + Download */}
       <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
         <motion.div
-          onClick={() => navigate("/CheckIdStatus")}
+          onClick={() => navigate("/status")}
           className="group relative bg-white rounded-2xl px-8 py-5 shadow-sm border border-gray-100 cursor-pointer hover:shadow-xl hover:border-[#FACC15]/50 transition-all duration-300 overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[#FACC15]/10 to-[#FACC15]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
