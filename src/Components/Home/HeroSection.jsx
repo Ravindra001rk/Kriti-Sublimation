@@ -3,6 +3,7 @@ import { DrawCircleText } from "../DrawCircleText";
 import { motion } from "framer-motion";
 import { FlipWords } from "./FlipWords";
 import { LiaLongArrowAltDownSolid } from "react-icons/lia";
+import CTAButton from "../CTAButton";
 
 const HeroSection = () => {
   return (
@@ -103,8 +104,7 @@ const HeroSection = () => {
 
         <div>
           <div className="h-full w-full cursor-pointer md:pt-22 pt-42 pb-12 flex justify-center items-center">
-            <div className="relative w-32 h-32 flex items-center justify-center">
-              {/* Rotating Text */}
+            {/* <div className="relative w-32 h-32 flex items-center justify-center">
               <svg
                 viewBox="0 0 200 200"
                 className="absolute w-full h-full rotating-text"
@@ -133,8 +133,13 @@ const HeroSection = () => {
                 </text>
               </svg>
 
-              {/* Center Arrow */}
               <LiaLongArrowAltDownSolid className="text-3xl" />
+            </div> */}
+
+            {/* CTA Button */}
+
+            <div className="">
+              
             </div>
           </div>
         </div>

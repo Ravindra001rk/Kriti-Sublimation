@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 // ── Outside component to prevent re-mount on keystroke ──
@@ -37,7 +37,7 @@ const Field = ({
 
 const UploadBox = ({ label, required, optional, preview, onChange, icon }) => (
   <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-2">
+    <label className="block flex-col text-sm font-semibold text-gray-700 mb-2">
       {required && <span className="text-red-500 mr-1">*</span>}
       {label}
       {optional && (
@@ -47,7 +47,7 @@ const UploadBox = ({ label, required, optional, preview, onChange, icon }) => (
       )}
     </label>
     <label className="block cursor-pointer">
-      <div className="w-[110px] h-[140px] rounded-xl border-2 border-dashed border-gray-200 hover:border-[#FE6E4D] transition overflow-hidden bg-gray-50 flex items-center justify-center">
+      <div className="w-27.5 h-35 rounded-xl border-2 border-dashed border-gray-200 hover:border-[#FE6E4D] transition overflow-hidden flex items-center justify-center">
         {preview ? (
           <img
             src={preview}
@@ -58,7 +58,6 @@ const UploadBox = ({ label, required, optional, preview, onChange, icon }) => (
           <div className="text-center p-3">
             <div className="text-2xl mb-1">{icon}</div>
             <p className="text-xs text-gray-400">Click to upload</p>
-            <p className="text-xs text-gray-300 mt-0.5">Max 2MB</p>
           </div>
         )}
       </div>
@@ -191,12 +190,14 @@ const OfficeIdCardForm = () => {
             Save this ID to check your application status.
           </p>
           <div className="flex gap-3">
-            <button
-              onClick={() => navigate("/IdCardForm")}
-              className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition"
-            >
-              Go Back
-            </button>
+            {/* Check Status (Primary now) */}
+            <Link to="/status" className="w-1/2">
+              <button className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FE6E4D] to-[#CC1267] text-white font-medium hover:opacity-90 transition">
+                Check Status
+              </button>
+            </Link>
+
+            {/* New Application (Secondary now) */}
             <button
               onClick={() => {
                 setSubmitted(false);
@@ -219,7 +220,7 @@ const OfficeIdCardForm = () => {
                 setPhotoPreview(null);
                 setSignPreview(null);
               }}
-              className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#FE6E4D] to-[#CC1267] text-white font-medium hover:opacity-90 transition"
+              className="w-1/2 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition"
             >
               New Application
             </button>
@@ -230,7 +231,7 @@ const OfficeIdCardForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F5F2] pt-24 pb-16 px-4">
+    <div className="min-h-screen bg-[#F7F5F2] poppins pt-14 pb-16 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <motion.div
@@ -238,34 +239,12 @@ const OfficeIdCardForm = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <button
-            onClick={() => navigate("/IdCardForm")}
-            className="flex items-center gap-2 text-gray-500 hover:text-gray-800 transition mb-6 text-sm font-medium"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back
-          </button>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FE6E4D] to-[#CC1267] flex items-center justify-center text-lg">
-              🏢
-            </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-gray-900">
                 Office ID Card
               </h1>
-              <p className="text-gray-400 text-sm">कार्यालय परिचय पत्र आवेदन</p>
+              <p className="text-gray-400 text-m">कार्यालय परिचय पत्र आवेदन</p>
             </div>
           </div>
         </motion.div>
@@ -301,7 +280,7 @@ const OfficeIdCardForm = () => {
               name="officeName"
               value={form.officeName}
               onChange={handleChange}
-              placeholder="e.g. Nepal Rastra Bank"
+              placeholder="Office's Name"
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -405,7 +384,7 @@ const OfficeIdCardForm = () => {
                 value={form.permanentAddress}
                 onChange={handleChange}
                 required
-                placeholder="Address in English"
+                placeholder="Permanent Address"
               />
               <Field
                 label="Address (Nepali)"
@@ -472,10 +451,9 @@ const OfficeIdCardForm = () => {
                 "Submit Application"
               )}
             </button>
-
-            <p className="text-xs text-gray-400 text-center">
-              <span className="text-red-400">*</span> marked fields are
-              required. सबमिट गरेपछि सब्मीशन नम्बर जेनेरट हुनेछ।
+            <p className="text-sm text-zinc-500 text-center">
+              ⚠️ सबमिट गर्नु अघि सबै विवरण राम्ररी जाँच गर्नुहोस्। गलत जानकारीको
+              लागि Kriti Sublimation जिम्मेवार हुने छैन।
             </p>
           </form>
         </motion.div>

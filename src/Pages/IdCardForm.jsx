@@ -7,14 +7,9 @@ const IdCardForm = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#F7F5F2] pt-14 pb-16 px-4">
+    <div className="min-h-screen bg-[#F7F5F2] poppins pt-14 pb-16 px-4">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-12"
-      >
+      <motion.div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
           Online ID Card Application Form
         </h1>
@@ -27,23 +22,18 @@ const IdCardForm = () => {
             label: "For Office",
             nepali: "कार्यालयको लागि",
             desc: "Employees & Organizations",
-            icon: "🏢",
             path: "/OfficeIdCardForm",
           },
           {
             label: "For School",
             nepali: "विद्यालयको लागि",
             desc: "Students & School Staff",
-            icon: "🏫",
             path: "/SchoolIdCardForm",
           },
         ].map((btn, i) => (
           <motion.div
             key={btn.label}
             onClick={() => navigate(btn.path)}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 + 0.2 }}
             className="group relative bg-white rounded-2xl px-8 py-3 shadow-sm border border-gray-100 cursor-pointer hover:shadow-xl hover:border-[#FE6E4D]/30 transition-all duration-300 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#FE6E4D]/5 to-[#CC1267]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -78,9 +68,6 @@ const IdCardForm = () => {
       <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
         <motion.div
           onClick={() => navigate("/CheckIdStatus")}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
           className="group relative bg-white rounded-2xl px-8 py-5 shadow-sm border border-gray-100 cursor-pointer hover:shadow-xl hover:border-[#FACC15]/50 transition-all duration-300 overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[#FACC15]/10 to-[#FACC15]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -94,9 +81,6 @@ const IdCardForm = () => {
         <motion.a
           href={aanumaatiPatra}
           download="Anumati Patra for ID Card.pdf"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
           className="group relative bg-gradient-to-br from-[#FE6E4D] to-[#CC1267] rounded-2xl p-8 shadow-sm cursor-pointer overflow-hidden block"
         >
           <div className="text-4xl mb-4">📄</div>
@@ -106,12 +90,7 @@ const IdCardForm = () => {
       </div>
 
       {/* Notice */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="max-w-3xl mx-auto bg-red-50 border-l-4 border-red-500 rounded-xl p-6 shadow-sm"
-      >
+      <motion.div className="max-w-3xl mx-auto bg-red-50 border-l-4 border-red-500 rounded-xl p-6 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-red-600 text-lg">⚠️</span>
           <p className="text-red-700 font-semibold text-lg tracking-wide">

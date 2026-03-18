@@ -18,6 +18,7 @@ import Footer from "./Components/Footer";
 import IdCardForm from "./Pages/IdCardForm";
 import OfficeIdCardForm from "./Pages/OfficeIdCardForm";
 import SchoolIdCardForm from "./Pages/SchoolIdCardForm";
+import FormStatus from "./Pages/FormStatus";
 function App() {
   const location = useLocation();
   const hideOn = ["/admin"]; // add more paths if needed
@@ -41,6 +42,7 @@ function App() {
         <Route path="/IdCardForm" element={<IdCardForm />} />
         <Route path="/OfficeIdCardForm" element={<OfficeIdCardForm />} />
         <Route path="/SchoolIdCardForm" element={<SchoolIdCardForm />} />
+        <Route path="/status" element={<FormStatus />} />
         <Route
           path="/IdCardForm/office"
           element={<IdCardForm initialView="office" />}
